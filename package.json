@@ -1,0 +1,21 @@
+{
+  "name": "sit725-2024-t2-prac3",
+  "version": "1.0.0",
+  "main": "server_get.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.2",
+    "nodemon": "^3.1.4",
+    "save": "^2.9.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server_get.js",
+    "start:dev": "nodemon server_get.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
