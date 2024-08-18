@@ -1,51 +1,55 @@
 const express = require('express');
 const mongoose = require("mongoose");
-let app = express();
 const cors = require('cors');
+const queryController = require('./controllers/queryController');
+
+let app = express();
 
 const corsOptions = {
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200,
-  };
- 
+};
+
 app.use(cors(corsOptions));
-
-mongoose.connect('mongodb+srv://sakthiapandian:ONdupx1TS8FpGHco@clustercar.9zvyi.mongodb.net/', {useNewUrlParser: true, useUnifiedTopology: true})
-const userSchema = new mongoose.Schema({
-    firstName : String,
-   lastName : String,
-    emailId : String,
-    phoneNumber : String,
-    query: String,
-})
-const User = mongoose.model('User', userSchema)
-
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + '/public'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
-app.post('/api/query', async(req,res)=>{
-    const { firstName,lastName, emailId, phoneNumber, query } = req.body;
-    const user = new User({firstName,lastName, emailId, phoneNumber, query});
-    const savedUser = await user.save()
-    res.json({message:'data inserted successfully', savedUser})
-})
-
-app.get('/', function (req,res) {
-  res.render('indexMongo.html');
+mongoose.connect('mongodb+srv://sakthiapandian:ONdupx1TS8FpGHco@clustercar.9zvyi.mongodb.net/', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
-app.get('/api/queries', async(req,res) => {
-    try {
-        const users = await User.find()
-        res.json(users)
- }catch(err){
-  return res.status(500).json({message:'error retrived in getting users'})
-    }
+// Routes
+app.post('/api/query', queryController.postQuery);
+app.get('/api/queries', queryController.getQueries);
 
+// Serving Views
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/views/index.html');
+});
+
+app.get('/contactUs', (req, res) => {
+    res.sendFile(__dirname + '/views/contactUs.html');
+});
+
+app.get('/query', (req, res) => {
+    res.sendFile(__dirname + '/views/query.html');
+});
+
+app.get('/QuerySuccessPage', (req, res) => {
+    res.sendFile(__dirname + '/views/QuerySuccessPage.html');
+});
+
+app.get('/rating', (req, res) => {
+    res.sendFile(__dirname + '/views/rating.html');
+});
+
+app.get('/home', (req, res) => {
+    res.sendFile(__dirname + '/views/index.html');
 });
 
 let port = process.env.port || 3000;
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log('express server started');
 });
