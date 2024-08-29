@@ -1,18 +1,26 @@
-// controllers/queryController.js
-const User = require('../models/userModel');
+import User from '../models/userModel.js';  
 
-exports.postQuery = async (req, res) => {
+export const postQuery = async (req, res) => {
     const { firstName, lastName, emailId, phoneNumber, query } = req.body;
-    const user = new User({ firstName, lastName, emailId, phoneNumber, query });
-    const savedUser = await user.save();
-    res.json({ message: 'data inserted successfully', savedUser });
+  
+    if (firstName ==='' && lastName=== '' && emailId === '' && phoneNumber ==='' && query === '') {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+    try {
+        const user = new User({ firstName, lastName, emailId, phoneNumber, query });
+        const savedUser = await user.save();
+        res.status(201).json({ message: 'Data inserted successfully', savedUser });
+    } catch (err) {
+        console.error('Error inserting data:', err.message);
+        res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    }
 };
 
-exports.getQueries = async (req, res) => {
+export const getQueries = async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);
     } catch (err) {
-        return res.status(500).json({ message: 'error retrieved in getting users' });
+        return res.status(500).json({ message: 'Error retrieving users' });
     }
 };

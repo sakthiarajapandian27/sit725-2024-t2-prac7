@@ -1,9 +1,9 @@
-const express = require('express');
-const mongoose = require("mongoose");
-const cors = require('cors');
-const queryController = require('./controllers/queryController');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import * as queryController from './controllers/queryController.js';
 
-let app = express();
+const app = express();
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -11,7 +11,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(new URL('public', import.meta.url).pathname));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -20,11 +20,10 @@ mongoose.connect('mongodb+srv://sakthiapandian:ONdupx1TS8FpGHco@clustercar.9zvyi
     useUnifiedTopology: true
 });
 
-// Routes
+
 app.post('/api/query', queryController.postQuery);
 app.get('/api/queries', queryController.getQueries);
 
-// Serving Views
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html');
 });
@@ -49,7 +48,9 @@ app.get('/home', (req, res) => {
     res.sendFile(__dirname + '/views/index.html');
 });
 
-let port = process.env.port || 3000;
+const port = process.env.port || 3000;
 app.listen(port, () => {
-    console.log('express server started');
+    console.log('Express server started');
 });
+
+export default app;  

@@ -26,7 +26,6 @@ let addCards;
 console.log(addCards,"addCards")
 function getAllQuery(){
     $.get('/api/queries', (response)=>{
-        // response's data is in array format, so we can use it
         console.log(response,"response")
         addCards = response;
         console.log(addCards,"response1")
