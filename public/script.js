@@ -23,18 +23,14 @@ function postQuery(queryData){
     });
 }
 let addCards;
-console.log(addCards,"addCards")
 function getAllQuery(){
     $.get('/api/queries', (response)=>{
-        console.log(response,"response")
         addCards = response;
-        console.log(addCards,"response1")
         if (response.statusCode === 200) {
             addCards= response;
         }
 
       var text = addCards.at(-1);
-      console.log(text,"text")
       firstNameText = `First name: ${text.firstName}`;
       document.getElementById('firstName').innerHTML = firstNameText;
       lastNameText = `Last name: ${text.lastName}`;
@@ -47,13 +43,27 @@ function getAllQuery(){
       document.getElementById('query').innerHTML = query;
     });
 }
-
-
 $(document).ready(function(){
     
     $('#formSubmit').click(()=>{
-        console.log("button click");
         formSubmitted();
     });
     getAllQuery();
+});
+
+$(document).ready(function () {
+    const socket = io(); 
+    console.log('Socket.IO client initialized');
+    socket.on('message', (message) => {
+        console.log('Message from server:', message);
+        $('#realTimeUpdates').append(`<p>${message}</p>`); 
+    });
+
+    socket.on('connect', () => {
+        console.log('Connected to the server successfully'); 
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Disconnected from the server'); 
+    });
 });
